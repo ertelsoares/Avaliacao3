@@ -7,9 +7,7 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.enterprise.inject.Produces;
 import javax.faces.model.SelectItem;
-import javax.inject.Inject;
 import br.com.av3.modelo.Medico;
 import br.com.av3.servico.ServicoMedico;
 
@@ -46,7 +44,7 @@ public class MedicoBean implements Serializable {
    
      public List<Medico> getMedicosEspecialidade() {
         if(especialidadeSelecionada == null){
-          return new LinkedList<>();   
+          return null;   
         }else{
            return servicoMedico.listarMedicosPorEspecilidade(especialidadeSelecionada);
         }
@@ -56,10 +54,13 @@ public class MedicoBean implements Serializable {
     public List<SelectItem> getMedicosEspeAsItems() {
         LinkedList<SelectItem> items = new LinkedList<>();
   
+        if(getEspecialidadeSelecionada() == null){
+            items.add(new SelectItem(null,"Selecione uma especialidade"));
+        }else{
           for (Medico me : getMedicosEspecialidade()) {
             items.add(new SelectItem(me, me.getNome()));
           }
-       
+        }
         return items;
     }
     

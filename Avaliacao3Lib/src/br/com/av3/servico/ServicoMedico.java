@@ -16,6 +16,5 @@ import br.com.av3.modelo.Medico;
 public interface ServicoMedico {
     public List<Medico> listarMedicos();
     public List<Medico> listarMedicosPorEspecilidade(Especialidade e);
-    public List<Consulta> listarconsultasPormedico(Consulta c);
     public Medico buscar(Long id);
 }

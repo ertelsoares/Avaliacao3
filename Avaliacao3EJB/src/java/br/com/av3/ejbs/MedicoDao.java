@@ -32,12 +32,7 @@ public class MedicoDao implements ServicoMedico{
         return q.getResultList(); 
     }
 
-    @Override
-    public List<Consulta> listarconsultasPormedico(Consulta c) {
-        Query q = em.createQuery("select m from medico m where m.id = :id_medico order by m.nome", Medico.class);
-        q.setParameter("id_medico", c);
-        return q.getResultList();  
-    }
+    
 
     @Override
     public Medico buscar(Long id) {
