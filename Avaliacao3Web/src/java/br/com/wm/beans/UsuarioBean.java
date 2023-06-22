@@ -3,6 +3,8 @@ package br.com.wm.beans;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 
 
 @Named(value = "usuarioBean")
@@ -49,6 +51,11 @@ public class UsuarioBean implements Serializable {
             nomedoUsuario = "Administrador";
             
             return "admin/index.xhtml";
+        }else{
+          FacesContext.getCurrentInstance().addMessage(
+                    null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Login inválido",
+                            "Esse login não existe na nossa base de dados"));   
         }
         return null;
     }

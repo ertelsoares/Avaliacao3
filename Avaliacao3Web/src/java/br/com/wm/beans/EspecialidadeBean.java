@@ -27,6 +27,7 @@ public class EspecialidadeBean implements Serializable {
    
     public List<SelectItem> getEspecialidadesAsItems() {
         LinkedList<SelectItem> items = new LinkedList<>();
+        items.add(new SelectItem(null,"Selecione uma especialidade"));
         for (Especialidade e : getEspecialidades()) {
             items.add(new SelectItem(e, e.getDescricao()));
         }

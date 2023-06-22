@@ -9,8 +9,11 @@
         <title>Identifique-se</title>
     </h:head>
     <h:body>
-        <div>Login</div>
+        
+        <div style="display: flex; justify-content: center; align-content: center; height: 80vh;  overflow:hidden; align-items: center; box-sizing: border-box;">
+            
         <h:form>
+            <h:outputLabel value="Login" style=" font-size: 30px; font-weight: bold;"></h:outputLabel>
         <p:panelGrid columns="2">
             <p:outputLabel value="Usuário:" />
             <p:inputText value="#{usuarioBean.usuario}"/>
@@ -18,7 +21,10 @@
             <p:password value="#{usuarioBean.senha}"/>
         </p:panelGrid>
         <p:commandButton value="Entrar" action="#{usuarioBean.login()}" />
-            </h:form>
+             <p:growl showDetail="true" showSummary="true" autoUpdate="true"/>
+          </h:form>
+            </div>
+
     </h:body>
 </html>
 

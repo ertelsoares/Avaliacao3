@@ -26,7 +26,7 @@
             <p:column>
                 <p:outputLabel><strong>Especialidade:</strong></p:outputLabel>
                 <p:selectOneMenu value="#{medicoBean.especialidadeSelecionada}"
-                                 converter="#{EspecialidadeConverter}" requiredMessage="Faltou selecionar o Tipo de Serviço" required="true">
+                                 converter="#{EspecialidadeConverter}" requiredMessage="Faltou selecionar uma Especialidade" required="true">
                     <f:selectItems value="#{consultaBean.especialidadesAsItems}"/>
                      <p:ajax event="change" immediate="true" update="especialidadeMedicos"/>
                 </p:selectOneMenu>
@@ -36,7 +36,7 @@
                 <p:outputLabel><strong>Médicos:</strong></p:outputLabel>
                 <p:selectOneMenu id="especialidadeMedicos"
                                  value="#{medicoBean.medicoSelecionado}"
-                                 converter="#{MedicoConverter}" requiredMessage="Faltou selecionar uma Equipe" required="true">
+                                 converter="#{MedicoConverter}" requiredMessage="Faltou selecionar um Médico" required="true">
                     <f:selectItems value="#{medicoBean.medicosEspeAsItems}"/>
                     <p:ajax event="change" immediate="true" update=":resultadosConsultas"/>
                 </p:selectOneMenu>
@@ -58,7 +58,8 @@
                             mode="popup"
                             requiredMessage="Faltou preencher a Data"
                             required="true"
-                            validatorMessage="Data Inválida. A data selecionada deve ser maior ou igual à data atual e deve ser agendado hoje a tarde ou depois."
+                            validatorMessage="Data Inválida. A data selecionada deve ser maior ou igual à data atual"
+                            validator="#{gerenciadorConsultasBean.validateData}"
                            >
                     <f:convertDateTime type="date" dateStyle="short" pattern="dd/MM/yyyy HH:mm" />
                 </p:calendar>
@@ -66,7 +67,9 @@
             <br></br>
             <br/>
             <p:commandButton value="Agendar" 
+                             async="true"
                              update=":resultadosConsultas"  action="#{gerenciadorConsultasBean.confirmarConsulta()}"/>
+             <p:growl showDetail="true" showSummary="true" autoUpdate="true"/>
         </h:form>
         <br></br>
         

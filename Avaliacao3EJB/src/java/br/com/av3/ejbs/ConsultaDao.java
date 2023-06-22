@@ -17,6 +17,7 @@ public class ConsultaDao implements ServicoConsulta {
 
     @Override
     public void marcarConsulta(Consulta c) {
+        
         em.persist(c);
     }
 

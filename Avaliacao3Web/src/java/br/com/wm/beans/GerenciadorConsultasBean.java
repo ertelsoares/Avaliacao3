@@ -9,9 +9,15 @@ import br.com.av3.servico.ServicoConsulta;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
 
 /**
@@ -28,12 +34,19 @@ public class GerenciadorConsultasBean implements Serializable {
     @Inject
     MedicoBean medicoBean;
     
+    
      private String nomePaciente;
      private String telefonePaciente;
      private Date dataHora;
      private Consulta consultaagendada;
+     private List<Consulta> consulAgendada;
     public GerenciadorConsultasBean() {
         consultaagendada =  new Consulta();
+    }
+    @PostConstruct
+    public void iniciar() {
+       consulAgendada = servicoConsulta.listarConsultas();
+        
     }
 
      public String confirmarConsulta() {
@@ -41,14 +54,55 @@ public class GerenciadorConsultasBean implements Serializable {
          consultaagendada.setTelefonePaciente(telefonePaciente);
          consultaagendada.setDataHora(dataHora);
          consultaagendada.setIdMedico(medicoBean.getMedicoSelecionado());
-         
-         servicoConsulta.marcarConsulta(consultaagendada);
-         
+         getConsultasAgendadas();
+         if(ExisteConsultaNesseHorario(consultaagendada)){
+            FacesContext.getCurrentInstance().addMessage(
+                    null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Horário não Disponivel",
+                            "Este Horário não está disponível pois já tem consulta nesse horário"));
+         }else{
+           FacesContext.getCurrentInstance().addMessage(
+                    null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "Consulta Marcada",
+                            "Consulta registrada com sucesso"));
+           servicoConsulta.marcarConsulta(consultaagendada);
+         }
          getConsultasPormedico();
         return null;
      }
      
+     
+     public Date getDateNow() {
+         Date now;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date()); 
+        now = cal.getTime();
+       return now;
+    }
+     public void validateData(FacesContext context, UIComponent component, Object value ) throws ValidatorException {
+     
+     if (value == null) {
+         return;
+       }
+     Date dataSelecionada = (Date) value;
+     
+     Date dataSelect = zeraCalendar(dataSelecionada);
+     if (dataSelect.before(getDateNow())) {
+        throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Data Inválida", "A data selecionada é anterior à data atual. "));
+     }
+   
+   }
+     public Date zeraCalendar(Date dataselect) {
+         Calendar cal = Calendar.getInstance();
+        cal.setTime(dataselect); 
+        
+      return cal.getTime();
+    }
      public String cancelarConsulta(Consulta c) {
+         FacesContext.getCurrentInstance().addMessage(
+                    null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "Consulta Cancelada",
+                            "Consulta cancelada com sucesso"));
         servicoConsulta.cancelarConsulta(c);
         return null;
      }
@@ -113,6 +167,30 @@ public class GerenciadorConsultasBean implements Serializable {
     public List<Consulta> getConsultasAgendadas() {
              return servicoConsulta.listarConsultas();
         
+    }
+    
+    
+    public boolean ExisteConsultaNesseHorario(Consulta c){
+        boolean existe = false;
+        for(Consulta cv :  this.consulAgendada){
+            //System.out.println(cv.getIdMedico());
+            if(cv.getIdMedico().equals(c.getIdMedico()) && cv.getDataHora().getTime() == c.getDataHora().getTime()){
+                
+                existe = true;
+            }else{
+                existe = false;   
+            }
+        }
+        
+        return existe;
+    }
+
+    public List<Consulta> getConsulAgendada() {
+        return consulAgendada;
+    }
+
+    public void setConsulAgendada(List<Consulta> consulAgendada) {
+        this.consulAgendada = consulAgendada;
     }
     
     
